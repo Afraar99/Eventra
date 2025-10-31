@@ -393,6 +393,7 @@ const FeedbackPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toast, setToast] = useState(null);
   const [isFocused, setIsFocused] = useState(false);
+  const [submittedFeedback, setSubmittedFeedback] = useState([]);
   const formRef = useRef(null);
 
   const feedbackTypes = [
@@ -621,85 +622,17 @@ const FeedbackPage = () => {
               </div>
             </div>
 
-              <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
-                <FloatingInput
-                  id="name"
-                  label="Your Name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  error={errors.name}
-                  icon={FiUser}
-                  required={false}
-                  placeholder="Enter your name"
-                />
+            <div className="md:w-3/5 p-10">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-extrabold text-gray-900 dark:text-gray-100">
+                  We'd Love to Hear From You
+                </h2>
+                <p className="mt-2 text-gray-600 dark:text-gray-400">
+                  Help us make Eventra better for everyone
+                </p>
+              </div>
 
-                <FloatingInput
-                  id="email"
-                  label="Email Address"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  error={errors.email}
-                  icon={FiMail}
-                  required={false}
-                  placeholder="your@email.com"
-                />
-
-                <FloatingSelect
-                  id="feedbackType"
-                  label="Feedback Type"
-                  value={formData.feedbackType}
-                  onChange={handleChange}
-                  options={feedbackTypes}
-                  error={errors.feedbackType}
-                  icon={FiMessageSquare}
-                  placeholder="Select a feedback type"
-                />
-
-                {/* Textarea with floating label animation */}
-                <div className="relative mt-6">
-                  <FiMessageSquare className="absolute left-4 top-4 text-gray-400 dark:text-gray-500 w-5 h-5 z-10" />
-                  <motion.label
-                    htmlFor="message"
-                    className={`absolute left-14 transition-all duration-300 ${
-                      isFocused || formData.message
-                        ? "top-0 text-xs text-indigo-600 dark:text-indigo-400 font-medium"
-                        : "top-4 text-sm text-gray-500 dark:text-gray-400"
-                    } ${errors.message ? "text-red-500 dark:text-red-400" : ""}`}
-                    initial={false}
-                    animate={{
-                      y: isFocused || formData.message ? -20 : 0,
-                      scale: isFocused || formData.message ? 0.85 : 1,
-                    }}
-                  >
-                    Your Message *
-                  </motion.label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows="4"
-                    value={formData.message}
-                    onChange={handleChange}
-                    onFocus={() => setIsFocused(true)}
-                    onBlur={() => setIsFocused(false)}
-                    className={`w-full p-4 pl-14 border rounded-lg focus:ring-2 focus:outline-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 ${
-                      errors.message
-                        ? "border-red-500 focus:ring-red-200 dark:focus:ring-red-900/50"
-                        : "border-gray-300 dark:border-gray-600 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-200 dark:focus:ring-indigo-900/50"
-                    }`}
-                  ></textarea>
-                  {errors.message && (
-                    <motion.p
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="text-red-500 dark:text-red-400 text-xs mt-1 ml-1"
-                    >
-                      {errors.message}
-                    </motion.p>
-                  )}
-                </div>
-
-                <form ref={formRef} onSubmit={handleSubmit} noValidate>
+              <form ref={formRef} onSubmit={handleSubmit} noValidate className="space-y-6">
                   <FloatingInput
                       id="name"
                       label="Your Name"
@@ -738,6 +671,8 @@ const FeedbackPage = () => {
                           rows="4"
                           value={formData.message}
                           onChange={handleChange}
+                          onFocus={() => setIsFocused(true)}
+                          onBlur={() => setIsFocused(false)}
                           className={`w-full px-4 pl-14 pt-6 pb-2 border-2 rounded-xl focus:ring-4 focus:outline-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 transition-all duration-300 resize-none ${
                               errors.message
                                   ? "border-red-500 focus:border-red-500 focus:ring-red-100 dark:focus:ring-red-900/30"
@@ -747,13 +682,13 @@ const FeedbackPage = () => {
                       <label
                           htmlFor="message"
                           className={`absolute left-14 pointer-events-none transition-all duration-200 ease-out ${
-                              formData.message
+                              isFocused || formData.message
                                   ? "top-2 text-xs font-medium"
                                   : "top-4 text-sm"
                           } ${
                               errors.message
                                   ? "text-red-500 dark:text-red-400"
-                                  : formData.message
+                                  : isFocused || formData.message
                                       ? "text-indigo-600 dark:text-indigo-400"
                                       : "text-gray-500 dark:text-gray-400"
                           }`}
